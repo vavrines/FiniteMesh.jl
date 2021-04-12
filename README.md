@@ -1,4 +1,4 @@
-# Mesher.jl
+# FiniteMesh.jl
 
 [![CI](https://github.com/vavrines/MeshArt.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/vavrines/MeshArt.jl/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/vavrines/MeshArt.jl/branch/main/graph/badge.svg?token=DpQ1YKKlBL)](https://codecov.io/gh/vavrines/MeshArt.jl)
