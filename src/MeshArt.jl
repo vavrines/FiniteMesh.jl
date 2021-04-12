@@ -1,5 +1,7 @@
 module MeshArt
 
+using PyCall
+
 export read_mesh,
 	   extract_cell,
        mesh_connectivity_2D,
