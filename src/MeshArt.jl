@@ -3,7 +3,6 @@ module MeshArt
 using PyCall
 
 export read_mesh,
-	   extract_cell,
        mesh_connectivity_2D,
        mesh_cell_type,
        mesh_center_2D,
@@ -22,17 +21,25 @@ Read mesh file
 """
 function read_mesh(file::T) where {T<:AbstractString}
     meshio = pyimport("meshio")
+
+    py"""
+    import meshio
+
+    def read(file):
+        m0 = meshio.read(file)
+
+        points = m0.points
+        celllist = m0.cells
+        for cell in celllist:
+            if not(cell[0] in ["line", "vertex"]):
+                cells = cell[1] + 1
+
+        return cells, points
+    """
+
     m0 = meshio.read(file)
 
-    return m0.cells, m0.points
-end
-
-function extract_cell(cells::T) where {T<:AbstractVector}
-    for i in eachindex(cells)
-        if !(cells[i][1] in ["line", "vertex"])
-            return cells[i][2] .+ 1 # python data is zero-indexed
-        end
-    end
+    return py"read"(file)
 end
 
 
