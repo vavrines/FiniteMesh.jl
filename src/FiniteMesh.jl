@@ -1,4 +1,4 @@
-module Mesher
+module FiniteMesh
 
 using PyCall
 
