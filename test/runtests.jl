@@ -15,6 +15,12 @@ import meshio
 def read_mesh(file):
     m0 = meshio.read(file)
 
-    return m0.cells[end][2]
+    points = m0.points
+    cells = m0.cells
+    for cell in cells:
+        if not(cell[0] in ["line", "vertex"]):
+            _cells = cell[1] + 1
+
+    return _cells, points
 """
-cells = py"read_mesh"("t1.msh")
+cells, nodes = py"read_mesh"("t1.msh")
