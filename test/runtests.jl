@@ -4,11 +4,11 @@ import MeshArt
 #MeshArt.read_mesh("t1.msh")
 
 using PyCall
-#meshio = pyimport("meshio")
-#m0 = meshio.read("t1.msh")
-#cells = m0.cells[end][2]
+meshio = pyimport("meshio")
+m0 = meshio.read("t1.msh")
+cells = m0.cells[end][1]
 #points = m0.points
-
+#=
 py"""
 import meshio
 
@@ -23,4 +23,4 @@ def read_mesh(file):
 
     return _cells, points
 """
-cells, nodes = py"read_mesh"("t1.msh")
+cells, nodes = py"read_mesh"("t1.msh")=#
