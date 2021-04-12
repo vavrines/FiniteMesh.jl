@@ -1,4 +1,4 @@
-# MeshArt.jl
+# Mesher.jl
 
 [![CI](https://github.com/vavrines/MeshArt.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/vavrines/MeshArt.jl/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/vavrines/MeshArt.jl/branch/main/graph/badge.svg?token=DpQ1YKKlBL)](https://codecov.io/gh/vavrines/MeshArt.jl)
@@ -37,7 +37,7 @@ The supported formats include:
 
 To read a mesh, simply do
 ```julia
-using MeshArt
+using Mesher
 cells, points = read_mesh("filepath")
 ```
 The resulted `points` are the coordinates of nodes, and `cells` provides the affiliation information of these points to cell IDs.

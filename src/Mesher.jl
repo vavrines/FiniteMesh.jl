@@ -1,4 +1,4 @@
-module MeshArt
+module Mesher
 
 using PyCall
 
