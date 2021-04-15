@@ -2,50 +2,78 @@ module FiniteMesh
 
 using PyCall
 
-export read_mesh,
+export Cells,
+       read_mesh,
+       extract_cell,
        mesh_connectivity_2D,
        mesh_cell_type,
        mesh_center_2D,
        mesh_area_2D,
        mesh_edge_center,
-       mesh_cell_edge
+       mesh_cell_edge,
+       mesh_edge_type
+
+
+"""
+Cell connectivity information
+"""
+struct Cells{T1,T2}
+    type::T1
+    index::T2
+end
+
 
 """
     read_mesh(file::T) where {T<:AbstractString}
-
 Read mesh file
-
 * @return cells: node ids inside cells
 * @return points: are saved with 3D coordinates (z=0 for 2D case)
-
 """
 function read_mesh(file::T) where {T<:AbstractString}
-    meshio = pyimport("meshio")
-
     py"""
     import meshio
-
     def read(file):
         m0 = meshio.read(file)
-
         points = m0.points
-        celllist = m0.cells
-        for cell in celllist:
-            if not(cell[0] in ["line", "vertex"]):
-                cells = cell[1] + 1
-
-        return cells, points
+        cells = m0.cells
+        keys = []
+        vals = []
+        for cell in cells:
+            keys.append(cell[0])
+            vals.append(cell[1])
+        return points, keys, vals
     """
 
-    m0 = meshio.read(file)
+    points, keys, vals = py"read"(file) 
+    for val in vals
+        val .+= 1 # python index is zero-based
+    end
 
-    return py"read"(file)
+    cells = Cells(keys, vals)
+
+    return cells, points
+end
+
+
+function extract_cell(cells::T) where {T<:AbstractVector}
+    for i in eachindex(cells)
+        if !(cells[i][1] in ["line", "vertex"])
+            return cells[i][2]
+        end
+    end
+end
+
+function extract_cell(cells::Cells)
+    for i in eachindex(cells.type)
+        if !(cells.type[i] in ["line", "vertex"])
+            return cells.index[i]
+        end
+    end
 end
 
 
 """
     mesh_connectivity_2D(_cells::AbstractArray{<:Integer,2})
-
 Compute connectivity of 2D unstructured mesh
 """
 function mesh_connectivity_2D(cells::T) where {T<:AbstractArray{<:Integer,2}}
@@ -61,7 +89,7 @@ function mesh_connectivity_2D(cells::T) where {T<:AbstractArray{<:Integer,2}}
         isNewEdge = true
         for j = 1:counter
             if tmpEdgeNodes[j, :] == [cells[i, k], cells[i, k%nNodesPerCell+1]] ||
-               tmpEdgeNodes[j, :] == [cells[i, k%nNodesPerCell+1], cells[i, k]]
+                tmpEdgeNodes[j, :] == [cells[i, k%nNodesPerCell+1], cells[i, k]]
                 isNewEdge = false
                 tmpEdgeCells[j, 2] = i
             end
@@ -81,8 +109,8 @@ function mesh_connectivity_2D(cells::T) where {T<:AbstractArray{<:Integer,2}}
     cellNeighbors = -ones(Int, nCells, nNodesPerCell)
     for i = 1:nCells, k = 1:nNodesPerCell, j = 1:nEdges
         if edgeNodes[j, 1] == cells[i, k] &&
-           edgeNodes[j, 2] == cells[i, k%nNodesPerCell+1] ||
-           edgeNodes[j, 1] == cells[i, k%nNodesPerCell+1] && edgeNodes[j, 2] == cells[i, k]
+            edgeNodes[j, 2] == cells[i, k%nNodesPerCell+1] ||
+            edgeNodes[j, 1] == cells[i, k%nNodesPerCell+1] && edgeNodes[j, 2] == cells[i, k]
             if edgeCells[j, 1] != i && edgeCells[j, 2] == i
                 cellNeighbors[i, k] = edgeCells[j, 1]
             elseif edgeCells[j, 1] == i && edgeCells[j, 2] != i
@@ -99,7 +127,6 @@ end
 
 """
     mesh_cell_type(cellNeighbors::T) where {T<:AbstractArray{<:Integer,2}}
-
 Compute types of elements
 - 0: inner
 - 1: boundary
@@ -118,7 +145,6 @@ end
 
 """
     mesh_area_2D(nodes::AbstractArray{<:AbstractFloat,2}, cells::AbstractArray{<:Int,2})
-
 Compute areas of 2D elements
 """
 function mesh_area_2D(
@@ -182,7 +208,6 @@ end
 
 """
     mesh_center_2D(nodes::AbstractArray{<:AbstractFloat,2}, cells::AbstractArray{<:Integer,2})
-
 Compute central points of 2D elements
 """
 function mesh_center_2D(
@@ -190,10 +215,10 @@ function mesh_center_2D(
     cells::Y,
 ) where {X<:AbstractArray{<:AbstractFloat,2},Y<:AbstractArray{<:Integer,2}}
 
-    cellMidPoints = zeros(size(cells, 1), 2)
+    cellMidPoints = zeros(size(cells, 1), size(nodes, 2))
     for i in axes(cellMidPoints, 1) # nCells
         for j in axes(cells, 2) # nNodesPerCell
-            cellMidPoints[i, :] .+= nodes[cells[i, j], 1:2]
+            cellMidPoints[i, :] .+= nodes[cells[i, j], :]
         end
     end
     cellMidPoints ./= size(cells, 2)
@@ -205,7 +230,6 @@ end
 
 """
     mesh_edge_center(nodes::AbstractArray{<:AbstractFloat,2}, edgeNodes::AbstractArray{<:Integer,2})
-
 Compute central points of cell edges
 """
 function mesh_edge_center(
@@ -227,7 +251,6 @@ end
 
 """
     mesh_edge_center(nodes::AbstractArray{<:AbstractFloat,2}, edgeNodes::AbstractArray{<:Integer,2})
-
 Compute central points of cell edges
 """
 function mesh_cell_edge(cells::X, edgeCells::Y) where {X<:AbstractArray{<:Integer,2},Y<:AbstractArray{<:Integer,2}}
@@ -248,6 +271,28 @@ function mesh_cell_edge(cells::X, edgeCells::Y) where {X<:AbstractArray{<:Intege
     end
 
     return cellEdges
+end
+
+
+"""
+Compute type of edges
+- 0: inner
+- 1: boundary
+"""
+function mesh_edge_type(edgeCells::X, cellType::Y) where {X<:AbstractArray{<:Integer,2},Y<:AbstractArray{<:Integer,1}}
+    edgeType = zeros(eltype(edgeCells), size(edgeCells, 1))
+
+    for i in axes(edgeCells, 1)
+        i1 = edgeCells[i, 1]
+        i2 = edgeCells[i, 2]
+        if cellType[i1] == 0 && cellType[i2] ==0
+            edgeType[i] = 0
+        else
+            edgeType[i] = 1
+        end
+    end
+
+    return edgeType
 end
 
 end # module
