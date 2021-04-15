@@ -37,7 +37,7 @@ The supported formats include:
 
 To read a mesh, simply do
 ```julia
-using Mesher
+using FiniteMesh
 cells, points = read_mesh("filepath")
 ```
 The resulted `points` are the coordinates of nodes, and `cells` provides the affiliation information of these points to cell IDs.
