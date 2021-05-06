@@ -56,14 +56,11 @@ function read_mesh(file::T) where {T<:AbstractString}
 end
 
 
-function extract_cell(cells::T) where {T<:AbstractVector}
-    for i in eachindex(cells)
-        if !(cells[i][1] in ["line", "vertex"])
-            return cells[i][2]
-        end
-    end
-end
+"""
+    extract_cell(cells::Cells)
 
+Extract cell id list from struct
+"""
 function extract_cell(cells::Cells)
     for i in eachindex(cells.type)
         if !(cells.type[i] in ["line", "vertex"])

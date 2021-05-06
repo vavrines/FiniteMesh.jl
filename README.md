@@ -1,7 +1,7 @@
 # FiniteMesh.jl
 
 [![CI](https://github.com/vavrines/MeshArt.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/vavrines/MeshArt.jl/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/vavrines/MeshArt.jl/branch/main/graph/badge.svg?token=DpQ1YKKlBL)](https://codecov.io/gh/vavrines/MeshArt.jl)
+[![codecov](https://codecov.io/gh/vavrines/FiniteMesh.jl/branch/main/graph/badge.svg?token=DpQ1YKKlBL)](https://codecov.io/gh/vavrines/FiniteMesh.jl)
 
 This package provides lightweight methods for mesh I/O. 
 The input interface is based on the Python project [meshio](https://github.com/nschloe/meshio).
