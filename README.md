@@ -44,10 +44,10 @@ The resulted `points` are the coordinates of nodes, and `cells` provides the aff
 
 The connectivity calculator is provided with native Julia.
 The following information can be inferred from `cells` and `points`: 
-- Node IDs of an edge
-- Adjacent cell IDs of an edge
+- Node IDs of a face
+- Adjacent cell IDs of a face
 - Neighbor cell IDs of a cell
 - Cell type (inner / boundary)
 - Cell volume / area
 - Cell center location
-- Edge center location
+- Face center location
