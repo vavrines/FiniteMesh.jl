@@ -18,3 +18,11 @@ cellArea = mesh_area_2D(nodes, cellid)
 
 cells, nodes = read_mesh("../mesh/SU2/naca0012.su2")
 add_group!(cells, "../mesh/SU2/naca0012.su2")
+
+rg = [0.1, 0.3, 0.5, 0.7, 0.9]
+x = hcat(rg, rg)
+rg = [0.1 0.3]
+y = vcat(rg, rg, rg, rg, rg)
+
+cells, points = unstructured_grid(cat(x, y, dims=3), [0., 1.], [0., 0.4])
+cells, points = unstructured_grid(x, y, 0., 1., 0., 0.4)

@@ -13,10 +13,13 @@ export mesh_connectivity_2D,
        mesh_face_type
 export add_group!,
        su2_group!
+export unstructured_index,
+       unstructured_grid
 
 include("struct.jl")
 include("connectivity.jl")
 include("group.jl")
+include("transform.jl")
 
 """
     read_mesh(file::T) where {T<:AbstractString}
