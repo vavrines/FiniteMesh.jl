@@ -67,3 +67,18 @@ function unstructured_grid(coords::T, xrange, yrange) where {T<:AbstractArray{<:
 
     unstructured_grid(xcoords, ycoords, x0, x1, y0, y1)
 end
+
+
+"""
+    triangulate(points::T) where {T<:AbstractMatrix}
+
+Split rectangular mesh into triangles
+
+- @arg points: structured node coordinates with shape (npoints, ndim)
+"""
+function triangulate(points::T) where {T<:AbstractMatrix}
+    sp = pyimport("scipy.spatial")
+    tri = sp.Delaunay(points)
+
+    return tri.simplices .+ 1 # python is zero-indexed
+end

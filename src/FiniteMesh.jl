@@ -14,7 +14,8 @@ export mesh_connectivity_2D,
 export add_group!,
        su2_group!
 export unstructured_index,
-       unstructured_grid
+       unstructured_grid,
+       triangulate
 
 include("struct.jl")
 include("connectivity.jl")
