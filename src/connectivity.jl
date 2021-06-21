@@ -10,11 +10,12 @@ function mesh_connectivity_2D(cells, points::AbstractMatrix{T}) where {T<:Real}
     cellNeighbors = mesh_cell_neighbor_2D(cellid, facePoints, faceCells)
     cellFaces = mesh_cell_face(cellid, faceCells)
     cellType = mesh_cell_type(cellNeighbors)
-    cellArea = mesh_area_2D(points, cellid)
-    cellCenter = mesh_center_2D(points, cellid)
+    cellArea = mesh_cell_area_2D(points, cellid)
+    cellCenter = mesh_cell_center(points, cellid)
     cellNormals = mesh_cell_normals_2D(points, cellid, cellCenter)
     faceCenter = mesh_face_center(points, facePoints)
     faceType = mesh_face_type(faceCells, cellType)
+    faceArea = mesh_face_area_2D(points, facePoints)
 
     return cellid,
         cellType,
@@ -22,10 +23,12 @@ function mesh_connectivity_2D(cells, points::AbstractMatrix{T}) where {T<:Real}
         cellFaces,
         cellCenter,
         cellArea,
+        cellNormals,
         facePoints,
         faceCells,
         faceCenter,
-        faceType
+        faceType,
+        faceArea
 end
 
 # ------------------------------------------------------------
@@ -70,6 +73,7 @@ function mesh_face_connectivity_2D(cells::T) where {T<:AbstractArray{<:Integer,2
     return edgeNodes, edgeCells
 end
 
+
 """
     mesh_face_center(
         nodes::X,
@@ -85,9 +89,15 @@ function mesh_face_center(
 
     edgeCenter = zeros(size(edgeNodes, 1), size(nodes, 2))
     for i in axes(edgeCenter, 1)
-        id1 = edgeNodes[i, 1]
-        id2 = edgeNodes[i, 2]
-        @. edgeCenter[i, :] = 0.5 * (nodes[id1, :] + nodes[id2, :])
+        pids = edgeNodes[i, :]
+
+        tmp = zeros(size(nodes, 2))
+        for i in eachindex(pids)
+            tmp .+= nodes[pids[i], :]
+        end
+        tmp ./= length(pids)
+
+        @. edgeCenter[i, :] = tmp
     end
 
     return edgeCenter
@@ -122,6 +132,22 @@ function mesh_face_type(
     end
 
     return edgeType
+end
+
+
+"""
+    mesh_face_area_2D(points, facePoints)
+
+Compute area of faces
+"""
+function mesh_face_area_2D(points, facePoints)
+    faceArea = zeros(size(facePoints, 1))
+
+    for i in eachindex(faceArea)
+        faceArea[i] = norm(points[facePoints[i, 1], 1:2] .- points[facePoints[i, 2], 1:2])
+    end
+
+    return faceArea
 end
 
 # ------------------------------------------------------------
@@ -204,7 +230,7 @@ end
 
 Compute areas of 2D elements
 """
-function mesh_area_2D(
+function mesh_cell_area_2D(
     nodes::X,
     cells::Y,
 ) where {X<:AbstractArray{<:AbstractFloat,2},Y<:AbstractArray{<:Integer,2}}
@@ -266,9 +292,9 @@ end
 """
     mesh_center_2D(nodes::AbstractArray{<:AbstractFloat,2}, cells::AbstractArray{<:Integer,2})
 
-Compute central points of 2D elements
+Compute central points of elements
 """
-function mesh_center_2D(
+function mesh_cell_center(
     nodes::X,
     cells::Y,
 ) where {X<:AbstractArray{<:AbstractFloat,2},Y<:AbstractArray{<:Integer,2}}

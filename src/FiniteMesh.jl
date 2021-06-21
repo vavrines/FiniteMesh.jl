@@ -4,17 +4,21 @@ using LinearAlgebra
 using PyCall
 
 export read_mesh
-export Cells, extract_cell
+export Mesh,
+       Cells,
+       extract_cell
 export mesh_connectivity_2D,
        mesh_face_connectivity_2D,
+       mesh_face_center,
+       mesh_face_type,
+       mesh_face_area_2D,
        mesh_cell_neighbor_2D,
        mesh_cell_type,
-       mesh_center_2D,
-       mesh_area_2D,
-       mesh_face_center,
+       mesh_cell_center,
+       mesh_cell_area_2D,
        mesh_cell_face,
-       mesh_face_type,
        mesh_cell_normals_2D
+       
 export add_group!,
        su2_group!
 export unstructured_index,

@@ -1,13 +1,12 @@
 using Test, FiniteMesh
 
 cd(@__DIR__)
-cells, nodes = read_mesh("../mesh/Gmsh/t1.msh")
-mesh_connectivity_2D(cells, nodes)
+mesh = Mesh("../mesh/Gmsh/t1.msh")
 
 cells, nodes = read_mesh("../mesh/Gmsh/square.msh")
 cellid = extract_cell(cells)
 edgeNodes, edgeCells = mesh_face_connectivity_2D(cellid)
-cellArea = mesh_area_2D(nodes, cellid)
+cellArea = mesh_cell_area_2D(nodes, cellid)
 
 cells, nodes = read_mesh("../mesh/SU2/naca0012.su2")
 add_group!(cells, "../mesh/SU2/naca0012.su2")
@@ -25,3 +24,5 @@ _points[3, :] = [1.0, 1.0]
 _points[4, :] = [0.0, 1.0]
 
 cells = triangulate(_points)
+
+FiniteMesh.unit_normal(rand(3), rand(3), rand(3))
