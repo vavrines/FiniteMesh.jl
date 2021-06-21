@@ -12,6 +12,7 @@ function mesh_connectivity_2D(cells, points::AbstractMatrix{T}) where {T<:Real}
     cellType = mesh_cell_type(cellNeighbors)
     cellArea = mesh_area_2D(points, cellid)
     cellCenter = mesh_center_2D(points, cellid)
+    cellNormals = mesh_cell_normals_2D(points, cellid, cellCenter)
     faceCenter = mesh_face_center(points, facePoints)
     faceType = mesh_face_type(faceCells, cellType)
 
@@ -317,3 +318,32 @@ function mesh_cell_face(
 end
 
 
+"""
+    mesh_cell_normals_2D(points, cells, cellCenter)
+
+Compute unit normal vectors of cells
+"""
+function mesh_cell_normals_2D(points, cells, cellCenter)
+    ncell = size(cells, 1)
+    np = size(cells, 2)
+    cell_normal = zeros(ncell, np, 2)
+
+    for i in 1:ncell
+        pids = [cells[i, j:j+1] for j = 1:np-1]
+        push!(pids, [cells[i, np], cells[i, 1]])
+
+        for j = 1:np
+            cell_normal[i, j, :] .= unit_normal(points[pids[j][1], :], points[pids[j][2], :])
+        end
+
+        p = [(points[pids[j][1], :] .+ points[pids[j][2], :]) ./ 2 for j = 1:np]
+
+        for j = 1:np
+            if dot(cell_normal[i, j, :], p[j][1:2] - cellCenter[i, 1:2]) < 0
+                cell_normal[i, j, :] .= -cell_normal[i, j, :]
+            end
+        end
+    end
+
+    return cell_normal
+end
