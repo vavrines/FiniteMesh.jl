@@ -6,7 +6,7 @@ end
 function su2_group!(cells::Cells, file::AbstractString)
     lines = readlines(file)
     ids = Int[]
-    for i in 1:length(lines)-1
+    for i = 1:length(lines)-1
         if lines[i][1:4] * lines[i+1][1:4] == "MARKMARK"
             push!(ids, i)
         end
@@ -22,8 +22,8 @@ function su2_group!(cells::Cells, file::AbstractString)
 
     for idx in eachindex(tags)
         key = split(tags[idx][1], "= ")[2] |> String
-        
-        value = zeros(Int, length(tags[idx])-1, length(split(tags[idx][2], "\t"))-1)
+
+        value = zeros(Int, length(tags[idx]) - 1, length(split(tags[idx][2], "\t")) - 1)
         for i in axes(value, 1)
             value[i, :] = parse.(Int, split(tags[idx][i+1], "\t")[2:end]) .+ 1
         end
