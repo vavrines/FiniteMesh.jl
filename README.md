@@ -35,10 +35,24 @@ The supported formats include:
  [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) ([TIN](https://en.wikipedia.org/wiki/Triangulated_irregular_network)) (`.wkt`),
  [XDMF](https://www.xdmf.org/index.php/XDMF_Model_and_Format) (`.xdmf`, `.xmf`).
 
+## Installation
+
+FiniteMesh.jl is a registered package in the official Julia package registry. 
+We recommend installing it with the built-in Julia package manager. It automatically installs a currently stable and tagged release. 
+From the Julia REPL, you can get in the package manager (by pressing ]) and add the package.
+
+```julia
+julia> ]
+(v1.6) pkg> add FiniteMesh
+```
+This will automatically install FiniteMesh and all its dependencies.
+
+## Usage
+
 To read a mesh, simply do
 ```julia
 using FiniteMesh
-cells, points = read_mesh("filepath")
+cells, points = read_mesh("path-of-mesh-file")
 ```
 The resulted `points` are the coordinates of nodes, and `cells` provides the affiliation information of these points to cell IDs.
 
@@ -48,6 +62,14 @@ The following information can be inferred from `cells` and `points`:
 - Adjacent cell IDs of a face
 - Neighbor cell IDs of a cell
 - Cell type (inner / boundary)
-- Cell volume / area
+- Cell volume
+- Face area
 - Cell center location
 - Face center location
+- Unit normal vector of a face
+
+For convenience, a `Mesh` struct is defined to contain all the above information as its fields.
+It can be constructed simply via
+```julia
+mesh = Mesh("path-of-mesh-file")
+```
