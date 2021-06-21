@@ -1,7 +1,7 @@
 module FiniteMesh
 
-using LinearAlgebra
 using PyCall
+using LinearAlgebra
 
 export read_mesh
 export Mesh,
@@ -18,19 +18,21 @@ export mesh_connectivity_2D,
        mesh_cell_area_2D,
        mesh_cell_face,
        mesh_cell_normals_2D
-       
 export add_group!,
        su2_group!
 export unstructured_index,
        unstructured_grid,
        triangulate
 export unit_normal
+export regularize_cell_neighbor, regularize_cell_face
 
 include("tools.jl")
 include("struct.jl")
 include("connectivity.jl")
 include("group.jl")
 include("transform.jl")
+include("regularize.jl")
+include("check.jl")
 
 """
     read_mesh(file::T) where {T<:AbstractString}

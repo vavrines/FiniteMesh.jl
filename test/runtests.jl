@@ -26,3 +26,9 @@ _points[4, :] = [0.0, 1.0]
 cells = triangulate(_points)
 
 FiniteMesh.unit_normal(rand(3), rand(3), rand(3))
+
+cellNeighborsReg = regularize_cell_neighbor(mesh.cellid, mesh.cellNeighbors)
+FiniteMesh.check_cell_neighbor(mesh.cellid, cellNeighborsReg)
+
+cellFacesReg = regularize_cell_face(mesh.cellid, mesh.cellFaces, mesh.facePoints)
+FiniteMesh.check_cell_face(mesh.cellid, cellFacesReg, mesh.facePoints)
