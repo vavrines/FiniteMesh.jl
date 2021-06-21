@@ -1,7 +1,9 @@
 # FiniteMesh.jl
 
+[![version](https://juliahub.com/docs/FiniteMesh/version.svg)](https://juliahub.com/ui/Packages/FiniteMesh/zdt25)
 [![CI](https://github.com/vavrines/MeshArt.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/vavrines/MeshArt.jl/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/vavrines/FiniteMesh.jl/branch/main/graph/badge.svg?token=DpQ1YKKlBL)](https://codecov.io/gh/vavrines/FiniteMesh.jl)
+[![deps](https://juliahub.com/docs/FiniteMesh/deps.svg)](https://juliahub.com/ui/Packages/FiniteMesh/zdt25?t=2)
 
 This package provides lightweight methods for mesh I/O. 
 The input interface is based on the Python project [meshio](https://github.com/nschloe/meshio).
