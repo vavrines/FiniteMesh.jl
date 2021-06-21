@@ -5,6 +5,8 @@ using PyCall
 export read_mesh
 export Cells, extract_cell
 export mesh_connectivity_2D,
+       mesh_face_connectivity_2D,
+       mesh_cell_neighbor_2D,
        mesh_cell_type,
        mesh_center_2D,
        mesh_area_2D,
