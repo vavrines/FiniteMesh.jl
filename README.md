@@ -38,14 +38,14 @@ The supported formats include:
 ## Installation
 
 FiniteMesh.jl is a registered package in the official Julia package registry. 
-We recommend installing it with the built-in Julia package manager. It automatically installs a currently stable and tagged release. 
+We recommend installing it with the built-in Julia package manager.
 From the Julia REPL, you can get in the package manager (by pressing ]) and add the package.
+This will automatically install the package and all its dependencies.
 
 ```julia
 julia> ]
 (v1.6) pkg> add FiniteMesh
 ```
-This will automatically install FiniteMesh and all its dependencies.
 
 ## Usage
 
