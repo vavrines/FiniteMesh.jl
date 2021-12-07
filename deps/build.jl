@@ -17,5 +17,5 @@ run(cmd)
 cmd = `pip3 install scipy --user`
 run(cmd)
 
-meshio = pyimport("meshio")
-scipy = pyimport("scipy")
+#meshio = pyimport("meshio")
+#scipy = pyimport("scipy")
