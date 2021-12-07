@@ -5,9 +5,9 @@ using PyCall, Conda
 # 1) Julia built-in miniconda
 # 2) global pip installer
 
-Conda.add_channel("conda-forge")
-Conda.add("meshio")
-Conda.add("scipy")
+#Conda.add_channel("conda-forge")
+#Conda.add("meshio")
+#Conda.add("scipy")
 #Conda.pip_interop(true)
 #Conda.pip("install", "meshio")
 
