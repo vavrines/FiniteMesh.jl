@@ -52,8 +52,8 @@ function read_mesh(file::T) where {T<:AbstractString}
         keys = []
         vals = []
         for cell in cells:
-            keys.append(cell[0])
-            vals.append(cell[1])
+            keys.append(cell.type)
+            vals.append(cell.data)
         return points, keys, vals
     """
 
