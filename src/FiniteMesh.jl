@@ -3,6 +3,7 @@ module FiniteMesh
 using PyCall
 using LinearAlgebra
 
+export FM
 export read_mesh
 export Mesh,
        Cells,
@@ -25,6 +26,8 @@ export unstructured_index,
        triangulate
 export unit_normal
 export regularize_cell_neighbor, regularize_cell_face
+
+const FM = FiniteMesh
 
 include("tools.jl")
 include("struct.jl")
