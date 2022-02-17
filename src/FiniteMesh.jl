@@ -1,13 +1,14 @@
 module FiniteMesh
 
+using Base.Threads: @threads
+using DocStringExtensions
+using ProgressMeter
 using PyCall
 using LinearAlgebra
 
 export FM
 export read_mesh
-export Mesh,
-       Cells,
-       extract_cell
+export Mesh, Cells, extract_cell
 export mesh_connectivity_2D,
        mesh_face_connectivity_2D,
        mesh_face_center,
@@ -19,11 +20,8 @@ export mesh_connectivity_2D,
        mesh_cell_area_2D,
        mesh_cell_face,
        mesh_cell_normals_2D
-export add_group!,
-       su2_group!
-export unstructured_index,
-       unstructured_grid,
-       triangulate
+export add_group!, su2_group!
+export unstructured_index, unstructured_grid, triangulate
 export unit_normal
 export regularize_cell_neighbor, regularize_cell_face
 
@@ -38,7 +36,7 @@ include("regularize.jl")
 include("check.jl")
 
 """
-    read_mesh(file::T) where {T<:AbstractString}
+$(SIGNATURES)
 
 Read mesh file
 

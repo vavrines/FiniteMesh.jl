@@ -70,7 +70,7 @@ end
 
 
 """
-    triangulate(points::T) where {T<:AbstractMatrix}
+$(SIGNATURES)
 
 Split rectangular mesh into triangles
 

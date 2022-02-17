@@ -1,13 +1,17 @@
 name = "FiniteMesh"
 uuid = "d3ebd857-6980-4843-ad12-8da20c4645b4"
 authors = ["Tianbai Xiao <tianbaixiao@gmail.com>"]
-version = "0.3.2"
+version = "0.3.3"
 
 [deps]
+DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
 PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 
 [compat]
+DocStringExtensions = "0.8"
+ProgressMeter = "^1"
 PyCall = "^1"
 julia = "^1"
 

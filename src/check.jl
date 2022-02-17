@@ -1,5 +1,5 @@
 """
-    check_neighbor_order(cells, cellNeighbors)
+$(SIGNATURES)
 
 check if cellNeighbors are regularized, e.g., in a triangle,
     
@@ -30,7 +30,7 @@ end
 
 
 """
-    check_neighbor_order(cells, cellNeighbors)
+$(SIGNATURES)
 
 check if cellFaces are regularized, e.g., in a triangle,
     

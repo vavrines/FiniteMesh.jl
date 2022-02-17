@@ -1,7 +1,9 @@
 """
-    2D: unit_normal(p1::T, p2::T) where {T<:AbstractVector}
-    3D: unit_normal(p1::T, p2::T, p3::T) where {T<:AbstractVector}
+$(SIGNATURES)
+
 Calculate unit normal vector
+
+2D
 """
 function unit_normal(p1::T, p2::T) where {T<:AbstractVector}
     Δ = p2 .- p1
@@ -10,6 +12,11 @@ function unit_normal(p1::T, p2::T) where {T<:AbstractVector}
     return [-Δ[2], Δ[1]] ./ l
 end
 
+"""
+$(SIGNATURES)
+
+3D
+"""
 function unit_normal(p1::T, p2::T, p3::T) where {T<:AbstractVector}
     v1 = p2 .- p1
     v2 = p3 .- p1

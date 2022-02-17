@@ -1,5 +1,5 @@
 """
-    regularize_cell_neighbor(cells, cellNeighbors)
+$(SIGNATURES)
 
 regularize neighboring cell IDs, e.g., in a triangle,
     
@@ -34,7 +34,7 @@ end
 
 
 """
-    regularize_cell_face(cells, cellFaces, facePoints)
+$(SIGNATURES)
 
 regularize affiliated face IDs, e.g., in a triangle,
     
@@ -55,7 +55,7 @@ function regularize_cell_face(cells, cellFaces, facePoints)
 
         for j = 1:nNodesPerCell
             pid = pids[j]
-            
+
             for fid in fids
                 if sort(pid) == sort(facePoints[fid, :])
                     cellFacesReg[i, j] = fid

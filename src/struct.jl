@@ -1,6 +1,7 @@
 """
-Struct of mesh information
+$(TYPEDEF)
 
+Struct of mesh information
 """
 struct Mesh{
     A,
@@ -12,7 +13,7 @@ struct Mesh{
 }
     cells::A # all information: cell, line, vertex
     points::B # locations of vertices
-    
+
     cellid::C # node indices of elements
     cellType::D # inner/boundary cell
     cellNeighbors::C # neighboring cells id
@@ -28,7 +29,7 @@ struct Mesh{
     faceArea::E # face area
 end
 
-function Mesh(file::T) where T<:AbstractString
+function Mesh(file::T) where {T<:AbstractString}
     cells, points = read_mesh(file)
     p = mesh_connectivity_2D(cells, points)
 
@@ -37,10 +38,7 @@ end
 
 
 """
-    struct Cells{T1,T2}
-        type::T1
-        index::T2
-    end
+$(TYPEDEF)
 
 Cell connectivity information
 """
@@ -51,7 +49,7 @@ end
 
 
 """
-    extract_cell(cells::Cells)
+$(SIGNATURES)
 
 Extract cell id list from struct
 """
