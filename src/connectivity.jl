@@ -7,7 +7,7 @@ function mesh_connectivity_2D(cells, points::AbstractMatrix{T}) where {T<:Real}
     cellid = extract_cell(cells)
 
     facePoints, faceCells = mesh_face_connectivity_2D(cellid)
-    cellNeighbors = mesh_cell_neighbor_2D(cellid, facePoints, faceCells)
+    cellNeighbors = mesh_cell_neighbor_2D(cellid)
     cellFaces = mesh_cell_face(cellid, faceCells)
     cellType = mesh_cell_type(cellNeighbors)
     cellArea = mesh_cell_area_2D(points, cellid)
