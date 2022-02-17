@@ -49,7 +49,7 @@ function mesh_face_connectivity_2D(cells::AbstractMatrix{T}) where {T<:Integer}
     tmpEdgeCells = -ones(Int, nEdgesMax, 2)
 
     counter = 0
-    for i = 1:nCells
+    @inbounds for i = 1:nCells
         for k = 1:nNodesPerCell
             endpoints = [cells[i, k], cells[i, k%nNodesPerCell+1]]
             isNewEdge = true
@@ -86,7 +86,7 @@ function mesh_face_center(
     edgeNodes::AbstractMatrix{T2},
 ) where {T1<:Real,T2<:Integer}
     edgeCenter = zeros(size(edgeNodes, 1), size(nodes, 2))
-    for i in axes(edgeCenter, 1)
+    @inbounds for i in axes(edgeCenter, 1)
         pids = edgeNodes[i, :]
 
         tmp = zeros(size(nodes, 2))
@@ -115,7 +115,7 @@ function mesh_face_type(
 ) where {T<:Integer}
     edgeType = zeros(eltype(edgeCells), size(edgeCells, 1))
 
-    for i in axes(edgeCells, 1)
+    @inbounds for i in axes(edgeCells, 1)
         i1 = edgeCells[i, 1]
         i2 = edgeCells[i, 2]
         if cellType[i1] == 0 && cellType[i2] == 0
@@ -137,7 +137,7 @@ Compute area of faces
 function mesh_face_area_2D(points, facePoints)
     faceArea = zeros(size(facePoints, 1))
 
-    for i in eachindex(faceArea)
+    @inbounds for i in eachindex(faceArea)
         faceArea[i] = norm(points[facePoints[i, 1], 1:2] .- points[facePoints[i, 2], 1:2])
     end
 
@@ -153,6 +153,68 @@ $(SIGNATURES)
 
 Compute neighbor cells of cells
 """
+function mesh_cell_neighbor_2D(cells::AbstractMatrix{T}) where {T<:Integer}
+    nCells = size(cells, 1)
+    nNodesPerCell = size(cells, 2)
+
+    prog = Progress(nCells, 5, "Computing mesh connectivity...", 50)
+    cellNeighbors = -ones(Int, nCells, nNodesPerCell)
+    @inbounds @threads for i = 1:nCells
+        for k = 1:nNodesPerCell
+            for j = 1:nCells
+                if j == i
+                    continue
+                end
+                
+                if length(intersect(cells[j, :], [cells[i, k], cells[i, k%nNodesPerCell+1]])) == 2
+                    cellNeighbors[i, k] = j
+                    break
+                end
+            end
+        end
+        next!(prog)
+    end
+
+    #=cellNeighbors = -ones(Int, nCells, nNodesPerCell)
+    @showprogress for i = 1:nCells, k = 1:nNodesPerCell
+        for j = 1:nEdges
+            if length(intersect(edgeNodes[j, :], [cells[i, k], cells[i, k%nNodesPerCell+1]])) ==
+            2 # shared face
+                idx = findall(x -> x != i, edgeCells[j, :]) |> first # idx takes value 1 or 2
+                cellNeighbors[i, k] = edgeCells[j, idx]
+                break
+            end
+        end
+    end=#
+
+    # cellNeighbors are already regularized, i.e.,
+    # face 1 -> neighbor cell 1
+    # face 2 -> neighbor cell 2
+    # face 3 -> neighbor cell 3
+    # so we can get rid of this part
+    #=
+    cellNeighbors_regular = -ones(Int, nCells, nNodesPerCell)
+    for i = 1:nCells
+        cids = cellNeighbors[i, :]
+
+        fpids = [cells[i, j:j+1] for j = 1:nNodesPerCell-1]
+        push!(fpids, [cells[i, nNodesPerCell], cells[i, 1]])
+
+        for j = 1:nNodesPerCell
+            fpid = fpids[j]
+
+            for k in eachindex(cids)
+                if cids[k] != -1 && length(intersect(fpid, cells[cids[k], :])) == 2
+                    cellNeighbors_regular[i, j] = cids[k]
+                end
+            end
+        end
+    end
+    =#
+
+    return cellNeighbors
+end
+
 function mesh_cell_neighbor_2D(
     cells::AbstractMatrix{T},
     edgeNodes::AbstractMatrix{T},
@@ -162,13 +224,20 @@ function mesh_cell_neighbor_2D(
     nNodesPerCell = size(cells, 2)
     nEdges = size(edgeNodes, 1)
 
+    prog = Progress(nCells, 5, "Computing mesh connectivity...", 50)
     cellNeighbors = -ones(Int, nCells, nNodesPerCell)
-    for i = 1:nCells, k = 1:nNodesPerCell, j = 1:nEdges
-        if length(intersect(edgeNodes[j, :], [cells[i, k], cells[i, k%nNodesPerCell+1]])) ==
-           2 # shared face
-            idx = findall(x -> x != i, edgeCells[j, :]) |> first # idx takes value 1 or 2
-            cellNeighbors[i, k] = edgeCells[j, idx]
+    @inbounds for i = 1:nCells
+        for k = 1:nNodesPerCell
+            for j = 1:nEdges
+                if length(intersect(edgeNodes[j, :], [cells[i, k], cells[i, k%nNodesPerCell+1]])) ==
+                2 # shared face
+                    idx = findall(x -> x != i, edgeCells[j, :]) |> first # idx takes value 1 or 2
+                    cellNeighbors[i, k] = edgeCells[j, idx]
+                    break
+                end
+            end
         end
+        next!(prog)
     end
 
     # cellNeighbors are already regularized, i.e.,
@@ -210,7 +279,7 @@ Compute types of elements
 """
 function mesh_cell_type(cellNeighbors::AbstractMatrix{T}) where {T<:Integer}
     cellid = zeros(eltype(cellNeighbors), size(cellNeighbors, 1))
-    for i in axes(cellNeighbors, 1)
+    @inbounds for i in axes(cellNeighbors, 1)
         if -1 in cellNeighbors[i, :]
             cellid[i] = 1
         end
@@ -295,7 +364,7 @@ function mesh_cell_center(
 ) where {T1<:AbstractFloat,T2<:Integer}
 
     cellMidPoints = zeros(size(cells, 1), size(nodes, 2))
-    for i in axes(cellMidPoints, 1) # nCells
+    @inbounds for i in axes(cellMidPoints, 1) # nCells
         for j in axes(cells, 2) # nNodesPerCell
             cellMidPoints[i, :] .+= nodes[cells[i, j], :]
         end
@@ -316,9 +385,10 @@ function mesh_cell_face(
     cells::AbstractMatrix{T},
     edgeCells::AbstractMatrix{T},
 ) where {T<:Integer}
+
     ncell = size(cells, 1)
     vv = [Int[] for i = 1:ncell]
-    for i in axes(edgeCells, 1)
+    @inbounds for i in axes(edgeCells, 1)
         if edgeCells[i, 1] != -1
             push!(vv[edgeCells[i, 1]], i)
         end
@@ -328,11 +398,12 @@ function mesh_cell_face(
     end
 
     cellEdges = zero(cells)
-    for i in axes(cellEdges, 1)
+    @inbounds for i in axes(cellEdges, 1)
         cellEdges[i, :] .= vv[i]
     end
 
     return cellEdges
+
 end
 
 
@@ -346,7 +417,7 @@ function mesh_cell_normals_2D(points, cells, cellCenter)
     np = size(cells, 2)
     cell_normal = zeros(ncell, np, 2)
 
-    for i = 1:ncell
+    @inbounds for i = 1:ncell
         pids = [cells[i, j:j+1] for j = 1:np-1]
         push!(pids, [cells[i, np], cells[i, 1]])
 

@@ -7,6 +7,7 @@ cells, nodes = read_mesh("../mesh/Gmsh/square.msh")
 cellid = extract_cell(cells)
 edgeNodes, edgeCells = mesh_face_connectivity_2D(cellid)
 cellArea = mesh_cell_area_2D(nodes, cellid)
+mesh_cell_neighbor_2D(cellid, edgeNodes, edgeCells)
 
 cells, nodes = read_mesh("../mesh/SU2/naca0012.su2")
 add_group!(cells, "../mesh/SU2/naca0012.su2")

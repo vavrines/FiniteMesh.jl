@@ -1,7 +1,7 @@
 name = "FiniteMesh"
 uuid = "d3ebd857-6980-4843-ad12-8da20c4645b4"
 authors = ["Tianbai Xiao <tianbaixiao@gmail.com>"]
-version = "0.3.3"
+version = "0.3.4"
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
