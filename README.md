@@ -1,8 +1,8 @@
 # FiniteMesh.jl
 
 [![version](https://juliahub.com/docs/FiniteMesh/version.svg)](https://juliahub.com/ui/Packages/FiniteMesh/zdt25)
-[![CI](https://github.com/vavrines/MeshArt.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/vavrines/MeshArt.jl/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/vavrines/FiniteMesh.jl/branch/main/graph/badge.svg?token=DpQ1YKKlBL)](https://codecov.io/gh/vavrines/FiniteMesh.jl)
+![CI](https://img.shields.io/github/workflow/status/vavrines/FiniteMesh.jl/CI)
+[![codecov](https://img.shields.io/codecov/c/github/vavrines/FiniteMesh.jl)](https://codecov.io/gh/vavrines/FiniteMesh.jl)
 [![deps](https://juliahub.com/docs/FiniteMesh/deps.svg)](https://juliahub.com/ui/Packages/FiniteMesh/zdt25?t=2)
 
 This package provides lightweight methods for mesh I/O. 
@@ -46,7 +46,7 @@ This will automatically install the package and all its dependencies.
 
 ```julia
 julia> ]
-(v1.6) pkg> add FiniteMesh
+(v1.7) pkg> add FiniteMesh
 ```
 
 ## Usage
