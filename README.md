@@ -1,7 +1,7 @@
 # FiniteMesh.jl
 
 [![version](https://juliahub.com/docs/FiniteMesh/version.svg)](https://juliahub.com/ui/Packages/FiniteMesh/zdt25)
-![CI](https://img.shields.io/github/workflow/status/vavrines/FiniteMesh.jl/CI)
+![CI](https://img.shields.io/github/actions/workflow/status/vavrines/FiniteMesh.jl/ci.yml?branch=main)
 [![codecov](https://img.shields.io/codecov/c/github/vavrines/FiniteMesh.jl)](https://codecov.io/gh/vavrines/FiniteMesh.jl)
 [![deps](https://juliahub.com/docs/FiniteMesh/deps.svg)](https://juliahub.com/ui/Packages/FiniteMesh/zdt25?t=2)
 
