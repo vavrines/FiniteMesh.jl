@@ -41,12 +41,12 @@ The supported formats include:
 
 FiniteMesh.jl is a registered package in the official Julia package registry. 
 We recommend installing it with the built-in Julia package manager.
-From the Julia REPL, you can get in the package manager (by pressing ]) and add the package.
+From the Julia REPL, you can get into the package manager (by pressing ]) and add the package.
 This will automatically install the package and all its dependencies.
 
 ```julia
 julia> ]
-(v1.8) pkg> add FiniteMesh
+(v1.10) pkg> add FiniteMesh
 ```
 
 ## Usage
@@ -56,7 +56,7 @@ To read a mesh, simply do
 using FiniteMesh
 cells, points = read_mesh("path-of-mesh-file")
 ```
-The resulted `points` are the coordinates of nodes, and `cells` provides the affiliation information of these points to cell IDs.
+The resulting `points` are the coordinates of nodes, and `cells` provides the affiliation information of these points to cell IDs.
 
 The connectivity calculator is provided with native Julia.
 The following information can be inferred from `cells` and `points`: 
