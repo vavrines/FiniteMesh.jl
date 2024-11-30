@@ -11,13 +11,13 @@ function check_cell_neighbor(cells, cellNeighbors)
     nCells = size(cells, 1)
     nNodesPerCell = size(cells, 2)
 
-    for i = 1:nCells
+    for i in 1:nCells
         cids = cellNeighbors[i, :]
 
-        fpids = [cells[i, j:j+1] for j = 1:nNodesPerCell-1]
+        fpids = [cells[i, j:j+1] for j in 1:nNodesPerCell-1]
         push!(fpids, [cells[i, nNodesPerCell], cells[i, 1]])
 
-        for j = 1:nNodesPerCell
+        for j in 1:nNodesPerCell
             nid = cids[j]
             if nid != -1
                 @assert length(intersect(fpids[j], cells[nid, :])) == 2 "neighbor is not regularized at ($i, $j)"
@@ -27,7 +27,6 @@ function check_cell_neighbor(cells, cellNeighbors)
 
     return true
 end
-
 
 """
 $(SIGNATURES)
@@ -42,11 +41,11 @@ function check_cell_face(cells, cellFaces, facePoints)
     nCells = size(cells, 1)
     nNodesPerCell = size(cells, 2)
 
-    for i = 1:nCells
-        fpids = [cells[i, j:j+1] for j = 1:nNodesPerCell-1]
+    for i in 1:nCells
+        fpids = [cells[i, j:j+1] for j in 1:nNodesPerCell-1]
         push!(fpids, [cells[i, nNodesPerCell], cells[i, 1]])
 
-        for j = 1:nNodesPerCell
+        for j in 1:nNodesPerCell
             @assert sort(facePoints[cellFaces[i, j], :]) == sort(fpids[j]) "face is not regularized at ($i, $j)"
         end
     end

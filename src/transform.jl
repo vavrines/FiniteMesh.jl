@@ -7,13 +7,13 @@ function unstructured_grid(coords::T, corners::T) where {T<:AbstractArray{<:Real
     np = (nx + 1) * (ny + 1)
 
     points = zeros(np, 2)
-    for i = 1:nx+1, j = 1:ny+1
+    for i in 1:nx+1, j in 1:ny+1
         idx = unstructured_index(i, j, nx + 1)
         points[idx, :] .= corners[i, j, :]
     end
 
     cells = zeros(Int, ne, 4)
-    for i = 1:nx, j = 1:ny
+    for i in 1:nx, j in 1:ny
         idx = unstructured_index(i, j, nx)
         cells[idx, 1] = unstructured_index(i, j, nx + 1)
         cells[idx, 2] = unstructured_index(i + 1, j, nx + 1)
@@ -27,14 +27,14 @@ end
 function unstructured_grid(x::T, y::T, x0, x1, y0, y1) where {T<:AbstractMatrix}
     Δx = zero(x[:, 1])
     Δx[1] = 2.0 * (x[1, 1] - x0)
-    for i = 2:length(Δx)-1
+    for i in 2:length(Δx)-1
         Δx[i] = 2.0 * (x[i, 1] - x[i-1, 1] - Δx[i-1])
     end
     Δx[end] = 2.0 * (x1 - x[end, 1])
 
     Δy = zero(y[1, :])
     Δy[1] = 2.0 * (y[1, 1] - y0)
-    for i = 2:length(Δy)-1
+    for i in 2:length(Δy)-1
         Δy[i] = 2.0 * (y[1, i] - y[1, i-1] - Δy[i-1])
     end
     Δy[end] = 2.0 * (y1 - y[1, end])
@@ -56,7 +56,7 @@ function unstructured_grid(x::T, y::T, x0, x1, y0, y1) where {T<:AbstractMatrix}
         end
     end
 
-    unstructured_grid(cat(x, y, dims = 3), points)
+    return unstructured_grid(cat(x, y; dims=3), points)
 end
 
 function unstructured_grid(coords::T, xrange, yrange) where {T<:AbstractArray{<:Real,3}}
@@ -65,9 +65,8 @@ function unstructured_grid(coords::T, xrange, yrange) where {T<:AbstractArray{<:
     x0, x1 = xrange
     y0, y1 = yrange
 
-    unstructured_grid(xcoords, ycoords, x0, x1, y0, y1)
+    return unstructured_grid(xcoords, ycoords, x0, x1, y0, y1)
 end
-
 
 """
 $(SIGNATURES)

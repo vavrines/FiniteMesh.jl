@@ -12,13 +12,13 @@ function regularize_cell_neighbor(cells, cellNeighbors)
     nNodesPerCell = size(cells, 2)
 
     cellNeighbors_regular = -ones(Int, nCells, nNodesPerCell)
-    for i = 1:nCells
+    for i in 1:nCells
         cids = cellNeighbors[i, :]
 
-        fpids = [cells[i, j:j+1] for j = 1:nNodesPerCell-1]
+        fpids = [cells[i, j:j+1] for j in 1:nNodesPerCell-1]
         push!(fpids, [cells[i, nNodesPerCell], cells[i, 1]])
 
-        for j = 1:nNodesPerCell
+        for j in 1:nNodesPerCell
             fpid = fpids[j]
 
             for k in eachindex(cids)
@@ -31,7 +31,6 @@ function regularize_cell_neighbor(cells, cellNeighbors)
 
     return cellNeighbors_regular
 end
-
 
 """
 $(SIGNATURES)
@@ -47,13 +46,13 @@ function regularize_cell_face(cells, cellFaces, facePoints)
     nNodesPerCell = size(cells, 2)
 
     cellFacesReg = zeros(Int, nCells, nNodesPerCell)
-    for i = 1:nCells
+    for i in 1:nCells
         fids = cellFaces[i, :]
 
-        pids = [cells[i, j:j+1] for j = 1:nNodesPerCell-1]
+        pids = [cells[i, j:j+1] for j in 1:nNodesPerCell-1]
         push!(pids, [cells[i, nNodesPerCell], cells[i, 1]])
 
-        for j = 1:nNodesPerCell
+        for j in 1:nNodesPerCell
             pid = pids[j]
 
             for fid in fids

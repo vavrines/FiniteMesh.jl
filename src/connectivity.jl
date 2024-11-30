@@ -49,11 +49,11 @@ function mesh_face_connectivity_2D(cells::AbstractMatrix{T}) where {T<:Integer}
     tmpEdgeCells = -ones(Int, nEdgesMax, 2)
 
     counter = 0
-    @inbounds for i = 1:nCells
-        for k = 1:nNodesPerCell
+    @inbounds for i in 1:nCells
+        for k in 1:nNodesPerCell
             endpoints = [cells[i, k], cells[i, k%nNodesPerCell+1]]
             isNewEdge = true
-            for j = 1:counter
+            for j in 1:counter
                 if tmpEdgeNodes[j, 1] ∈ endpoints && tmpEdgeNodes[j, 2] ∈ endpoints
                     isNewEdge = false
                     tmpEdgeCells[j, 2] = i
@@ -74,7 +74,6 @@ function mesh_face_connectivity_2D(cells::AbstractMatrix{T}) where {T<:Integer}
 
     return edgeNodes, edgeCells
 end
-
 
 """
 $(SIGNATURES)
@@ -128,7 +127,6 @@ function mesh_face_type(
     return edgeType
 end
 
-
 """
 $(SIGNATURES)
 
@@ -159,14 +157,17 @@ function mesh_cell_neighbor_2D(cells::AbstractMatrix{T}) where {T<:Integer}
 
     prog = Progress(nCells, 5, "Computing mesh connectivity...", 50)
     cellNeighbors = -ones(Int, nCells, nNodesPerCell)
-    @inbounds @threads for i = 1:nCells
-        for k = 1:nNodesPerCell
-            for j = 1:nCells
+    @inbounds @threads for i in 1:nCells
+        for k in 1:nNodesPerCell
+            for j in 1:nCells
                 if j == i
                     continue
                 end
-                
-                if length(intersect(cells[j, :], [cells[i, k], cells[i, k%nNodesPerCell+1]])) == 2
+
+                if length(intersect(
+                    cells[j, :],
+                    [cells[i, k], cells[i, k%nNodesPerCell+1]],
+                )) == 2
                     cellNeighbors[i, k] = j
                     break
                 end
@@ -226,11 +227,13 @@ function mesh_cell_neighbor_2D(
 
     prog = Progress(nCells, 5, "Computing mesh connectivity...", 50)
     cellNeighbors = -ones(Int, nCells, nNodesPerCell)
-    @inbounds for i = 1:nCells
-        for k = 1:nNodesPerCell
-            for j = 1:nEdges
-                if length(intersect(edgeNodes[j, :], [cells[i, k], cells[i, k%nNodesPerCell+1]])) ==
-                2 # shared face
+    @inbounds for i in 1:nCells
+        for k in 1:nNodesPerCell
+            for j in 1:nEdges
+                if length(intersect(
+                    edgeNodes[j, :],
+                    [cells[i, k], cells[i, k%nNodesPerCell+1]],
+                )) == 2 # shared face
                     idx = findall(x -> x != i, edgeCells[j, :]) |> first # idx takes value 1 or 2
                     cellNeighbors[i, k] = edgeCells[j, idx]
                     break
@@ -268,7 +271,6 @@ function mesh_cell_neighbor_2D(
     return cellNeighbors
 end
 
-
 """
 $(SIGNATURES)
 
@@ -288,7 +290,6 @@ function mesh_cell_type(cellNeighbors::AbstractMatrix{T}) where {T<:Integer}
     return cellid
 end
 
-
 """
 $(SIGNATURES)
 
@@ -298,20 +299,15 @@ function mesh_cell_area_2D(
     nodes::AbstractMatrix{T1},
     cells::AbstractMatrix{T2},
 ) where {T1<:Real,T2<:Integer}
-
     ΔS = zeros(size(cells, 1))
 
     if size(cells, 2) == 3 # triangular mesh
         for i in eachindex(ΔS)
-            ΔS[i] = abs(
-                (
-                    nodes[cells[i, 1], 1] *
-                    (nodes[cells[i, 2], 2] - nodes[cells[i, 3], 2]) +
-                    nodes[cells[i, 2], 1] *
-                    (nodes[cells[i, 3], 2] - nodes[cells[i, 1], 2]) +
-                    nodes[cells[i, 3], 1] * (nodes[cells[i, 1], 2] - nodes[cells[i, 2], 2])
-                ) / 2,
-            )
+            ΔS[i] = abs((nodes[cells[i, 1], 1] *
+                 (nodes[cells[i, 2], 2] - nodes[cells[i, 3], 2]) +
+                 nodes[cells[i, 2], 1] * (nodes[cells[i, 3], 2] - nodes[cells[i, 1], 2]) +
+                 nodes[cells[i, 3], 1] * (nodes[cells[i, 1], 2] - nodes[cells[i, 2], 2])) /
+                2,)
         end
     elseif size(cells, 2) == 4 # quadrilateral mesh
         for i in eachindex(ΔS)
@@ -341,17 +337,13 @@ function mesh_cell_area_2D(
             alpha = acos((d4[1] * d1[1] + d4[2] * d1[2]) / (a * d))
             beta = acos((d2[1] * d3[1] + d2[2] * d3[2]) / (b * c))
 
-            ΔS[i] = sqrt(
-                (T - a) * (T - b) * (T - c) * (T - d) -
-                a * b * c * d * cos(0.5 * (alpha + beta)) * cos(0.5 * (alpha + beta)),
-            )
+            ΔS[i] = sqrt((T - a) * (T - b) * (T - c) * (T - d) -
+                 a * b * c * d * cos(0.5 * (alpha + beta)) * cos(0.5 * (alpha + beta)),)
         end
     end
 
     return ΔS
-
 end
-
 
 """
 $(SIGNATURES)
@@ -362,7 +354,6 @@ function mesh_cell_center(
     nodes::AbstractMatrix{T1},
     cells::AbstractMatrix{T2},
 ) where {T1<:AbstractFloat,T2<:Integer}
-
     cellMidPoints = zeros(size(cells, 1), size(nodes, 2))
     @inbounds for i in axes(cellMidPoints, 1) # nCells
         for j in axes(cells, 2) # nNodesPerCell
@@ -372,9 +363,7 @@ function mesh_cell_center(
     cellMidPoints ./= size(cells, 2)
 
     return cellMidPoints
-
 end
-
 
 """
 $(SIGNATURES)
@@ -385,9 +374,8 @@ function mesh_cell_face(
     cells::AbstractMatrix{T},
     edgeCells::AbstractMatrix{T},
 ) where {T<:Integer}
-
     ncell = size(cells, 1)
-    vv = [Int[] for i = 1:ncell]
+    vv = [Int[] for i in 1:ncell]
     @inbounds for i in axes(edgeCells, 1)
         if edgeCells[i, 1] != -1
             push!(vv[edgeCells[i, 1]], i)
@@ -403,9 +391,7 @@ function mesh_cell_face(
     end
 
     return cellEdges
-
 end
-
 
 """
 $(SIGNATURES)
@@ -417,18 +403,18 @@ function mesh_cell_normals_2D(points, cells, cellCenter)
     np = size(cells, 2)
     cell_normal = zeros(ncell, np, 2)
 
-    @inbounds for i = 1:ncell
-        pids = [cells[i, j:j+1] for j = 1:np-1]
+    @inbounds for i in 1:ncell
+        pids = [cells[i, j:j+1] for j in 1:np-1]
         push!(pids, [cells[i, np], cells[i, 1]])
 
-        for j = 1:np
+        for j in 1:np
             cell_normal[i, j, :] .=
                 unit_normal(points[pids[j][1], :], points[pids[j][2], :])
         end
 
-        p = [(points[pids[j][1], :] .+ points[pids[j][2], :]) ./ 2 for j = 1:np]
+        p = [(points[pids[j][1], :] .+ points[pids[j][2], :]) ./ 2 for j in 1:np]
 
-        for j = 1:np
+        for j in 1:np
             if dot(cell_normal[i, j, :], p[j][1:2] - cellCenter[i, 1:2]) < 0
                 cell_normal[i, j, :] .= -cell_normal[i, j, :]
             end

@@ -36,7 +36,6 @@ function Mesh(file::T) where {T<:AbstractString}
     return Mesh((cells, points)..., p...)
 end
 
-
 """
 $(TYPEDEF)
 
@@ -46,7 +45,6 @@ struct Cells{T1,T2}
     type::T1
     index::T2
 end
-
 
 """
 $(SIGNATURES)
