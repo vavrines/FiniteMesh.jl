@@ -46,7 +46,7 @@ This will automatically install the package and all its dependencies.
 
 ```julia
 julia> ]
-(v1.10) pkg> add FiniteMesh
+(v1.11) pkg> add FiniteMesh
 ```
 
 ## Usage
