@@ -12,7 +12,7 @@ Conda.add("scipy")
 #Conda.pip("install", "meshio")
 
 @info "installing python mates"
-cmd = `pip3 install meshio scipy --user`
+cmd = `pip3 install meshio scipy --user --break-system-packages`
 run(cmd)
 
 #meshio = pyimport("meshio")
