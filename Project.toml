@@ -1,6 +1,6 @@
 name = "FiniteMesh"
 uuid = "d3ebd857-6980-4843-ad12-8da20c4645b4"
-version = "0.3.6"
+version = "0.3.7"
 authors = ["Tianbai Xiao <tianbaixiao@gmail.com>"]
 
 [deps]
